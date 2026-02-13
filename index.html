@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matcha Cỏ Bốn Lá - Tinh Khiết Từ Thiên Nhiên</title>
+    <style>
+        /* --- CẤU HÌNH CHUNG --- */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2E7D32;
+            --text-color: #333;
+            --bg-light: #f9fbf9;
+        }
+        
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
+            color: var(--text-color); line-height: 1.6; font-size: 16px;
+        }
+
+        /* --- HEADER (STICKY) --- */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* QUAN TRỌNG: Giữ header dính trên cùng khi cuộn */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: 0.3s;
+        }
+
+        .logo-container { display: flex; align-items: center; z-index: 1001; }
+        .logo-img { height: 50px; margin-right: 10px; }
+        .brand-name {
+            font-size: 1.4rem; font-weight: bold; color: var(--secondary-color);
+            font-family: 'Brush Script MT', cursive; 
+        }
+
+        /* Menu Desktop */
+        nav ul { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+        nav a { text-decoration: none; color: var(--text-color); font-weight: 500; transition: 0.3s; cursor: pointer; display: block; padding: 5px; }
+        nav a:hover { color: var(--primary-color); }
+
+        /* Nút Mua Ngay trên Header */
+        .header-cta {
+            padding: 10px 25px; background-color: var(--primary-color); color: white;
+            border-radius: 25px; text-decoration: none; font-weight: bold;
+            transition: 0.3s; font-size: 1rem; white-space: nowrap;
+        }
+        .header-cta:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+
+        /* Nút Menu Mobile (Mặc định ẩn trên Desktop) */
+        .menu-toggle {
+            display: none;
+            font-size: 28px;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1582793988951-9aed5509eb97?ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80');
+            background-size: cover; background-position: center; 
+            min-height: 80vh; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; color: white; padding: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; margin: 0 0 10px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); line-height: 1.2; }
+        .hero h2 { font-size: 1.8rem; font-weight: 300; margin-bottom: 30px; font-style: italic; }
+        .hero-btns { display: flex; gap: 20px; }
+        .btn-hero {
+            padding: 12px 30px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 1.1rem; transition: 0.3s; border: none; cursor: pointer;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-outline { background-color: transparent; border: 2px solid white; color: white; }
+        .btn-primary:hover { background-color: var(--secondary-color); transform: translateY(-2px); }
+        .btn-outline:hover { background-color: white; color: var(--primary-color); }
+
+        /* --- FEATURES --- */
+        .features { padding: 60px 20px; background-color: var(--bg-light); text-align: center; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+        .feature-item img { width: 70px; margin-bottom: 15px; }
+        .feature-item h3 { color: var(--secondary-color); margin-bottom: 10px; }
+
+        /* --- PRODUCT --- */
+        .product-section { padding: 60px 20px; text-align: center; }
+        .product-card {
+            border: 1px solid #eee; border-radius: 10px; padding: 20px;
+            max-width: 350px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.3s; background-color: white;
+        }
+        .product-img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
+        .price { color: var(--primary-color); font-size: 1.5rem; font-weight: bold; margin: 10px 0; }
+        .promo-tag { background-color: #ff9800; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; display: inline-block; margin-bottom: 10px; }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+            width: 100%; height: 100%; overflow: auto; 
+            background-color: rgba(0,0,0,0.6); backdrop-filter: blur(3px); animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            background-color: #fefefe; margin: 10vh auto; padding: 30px; border: 1px solid #888;
+            width: 90%; max-width: 500px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative; animation: slideIn 0.4s;
+        }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; position: absolute; right: 20px; top: 10px; cursor: pointer; padding: 5px; }
+        .form-input, .form-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
+        .btn-submit { width: 100%; padding: 14px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px);} to {transform: translateY(0);} }
+
+        /* --- FOOTER --- */
+        footer { background-color: #1a1a1a; color: white; padding: 40px 20px; text-align: center; }
+
+        /* =========================================
+           RESPONSIVE CSS (MOBILE)
+           ========================================= */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 20px;
+                /* Header vẫn dính (sticky) nhưng layout sẽ đổi */
+            }
+
+            /* Hiện nút menu hamburger */
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Ẩn nút Mua ngay trên header mobile cho gọn */
+            .header-cta {
+                display: none;
+            }
+
+            /* Menu Logic: Ẩn mặc định, hiện khi có class .active */
+            nav {
+                position: absolute;
+                top: 100%; /* Đẩy xuống ngay dưới header */
+                left: 0;
+                width: 100%;
+                background-color: white;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+                border-top: 1px solid #eee;
+                
+                /* Quan trọng: Ẩn menu đi */
+                display: none; 
+            }
+
+            /* Class này sẽ được JS thêm vào khi bấm nút */
+            nav.active {
+                display: block;
+                animation: slideDown 0.3s ease;
+            }
+
+            nav ul {
+                flex-direction: column; /* Xếp dọc */
+                gap: 0;
+            }
+
+            nav a {
+                padding: 15px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 1.1rem;
+            }
+
+            nav a:hover {
+                background-color: #f9fbf9;
+            }
+
+            /* Mobile Typography */
+            .hero h1 { font-size: 2.2rem; }
+            .hero-btns { flex-direction: column; width: 100%; max-width: 300px; }
+            .btn-hero { width: 100%; }
+            .modal-content { margin: 15vh auto; width: 95%; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo Cỏ Bốn Lá" class="logo-img"> 
+            <span class="brand-name">Cỏ Bốn Lá</span>
+        </div>
+
+        <div class="menu-toggle">☰</div>
+
+        <nav>
+            <ul>
+                <li><a href="#home">Trang chủ</a></li>
+                <li><a href="#about">Câu chuyện</a></li>
+                <li><a href="#product">Sản phẩm</a></li>
+            </ul>
+        </nav>
+
+        <a href="#product" class="header-cta">Mua ngay</a>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>MATCHA CỎ BỐN LÁ</h1>
+        <h2>"Matcha xanh – tinh khiết từ thiên nhiên"</h2>
+        <div class="hero-btns">
+            <a href="https://shopee.vn/" class="btn-hero btn-primary">Đặt hàng Shopee</a>
+            <button class="btn-hero btn-outline trigger-modal">Nhận báo giá Sỉ</button>
+        </div>
+    </section>
+
+    <section class="features" id="about">
+        <h2>Tại sao chọn Cỏ Bốn Lá?</h2>
+        <p style="max-width: 600px; margin: 0 auto 30px auto;">Chúng tôi mang đến giải pháp nguyên liệu sạch cho sinh viên và chủ quán Việt</p>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>🌱 100% Tự Nhiên</h3>
+                <p>Không chất bảo quản, không hương liệu, giữ trọn vị nguyên bản.</p>
+            </div>
+            <div class="feature-item">
+                <h3>🍵 Mịn & Thơm</h3>
+                <p>Công nghệ nghiền hiện đại giúp bột mịn, dễ dàng hòa tan.</p>
+            </div>
+            <div class="feature-item">
+                <h3>🎁 Quà Tặng Kèm</h3>
+                <p>Tặng ngay muỗng định lượng trong mỗi hộp sản phẩm.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="product-section" id="product">
+        <h2>Sản phẩm nổi bật</h2>
+        <div class="product-card">
+            <span class="promo-tag">Best Seller</span>
+            <img src="https://hstatic.net/133/1000089133/1/2016/5-17/bot_tra_xanh_nhat_ban_10gr_597039f9-79ac-426c-4144-295875f98c24.jpg" alt="Bột Matcha Cỏ Bốn Lá" class="product-img">
+            <h3>Bột Matcha Cỏ Bốn Lá (100g)</h3>
+            <p>Phù hợp pha Latte, làm bánh, đắp mặt nạ.</p>
+            <div class="price">150.000 VNĐ</div>
+            <p style="font-size: 0.9rem; color: #666;">Use: Tặng muỗng định lượng + Công thức</p>
+            <a href="https://shopee.vn/" class="btn-hero btn-primary" style="width: 100%; display: inline-block; font-size: 1rem;">Mua ngay trên Shopee</a>
+        </div>
+    </section>
+
+    <div id="wholesaleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 style="color: var(--secondary-color); text-align: center; margin-bottom: 5px; font-size: 1.5rem;">NHẬN BÁO GIÁ SỈ</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 0.9rem;">Điền thông tin để nhận bảng giá & mẫu thử miễn phí</p>
+            
+            <form action="#">
+                <input type="text" class="form-input" required placeholder="Họ và tên *">
+                <input type="tel" class="form-input" required placeholder="Số điện thoại (Zalo) *">
+                <select class="form-select">
+                    <option value="cafe">Quán Cafe / Trà sữa</option>
+                    <option value="bakery">Tiệm Bánh</option>
+                    <option value="online">Shop Online</option>
+                </select>
+                <button type="submit" class="btn-submit">NHẬN BÁO GIÁ NGAY</button>
+            </form>
+        </div>
+    </div>
+
+    <footer id="contact">
+        <h3>CỎ BỐN LÁ - MATCHA VIỆT NAM</h3>
+        <p>Hotline: 0xxx.xxx.xxx | Email: info@cobonla.com</p>
+        <p>Địa chỉ: 280 An Dương Vương, P. Chợ Quán, TP.HCM</p>
+        <p style="margin-top: 20px; font-size: 0.8rem;">© 2026 Cỏ Bốn Lá.</p>
+    </footer>
+
+    <script>
+        // 1. XỬ LÝ MENU MOBILE
+        const menuToggle = document.querySelector('.menu-toggle');
+        const nav = document.querySelector('nav');
+        const navLinks = document.querySelectorAll('nav a'); // Lấy tất cả link trong menu
+
+        // Khi bấm nút Hamburger -> Bật/Tắt menu
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+        // Khi bấm vào bất kỳ link nào trong menu -> Tự động đóng menu lại
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+            });
+        });
+
+        // 2. XỬ LÝ MODAL POPUP
+        const modal = document.getElementById("wholesaleModal");
+        const btns = document.querySelectorAll(".trigger-modal");
+        const span = document.getElementsByClassName("close-btn")[0];
+
+        btns.forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                modal.style.display = "block";
+                // Nếu đang mở menu mobile thì đóng lại luôn cho gọn
+                nav.classList.remove('active'); 
+            }
+        });
+
+        span.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+    </script>
+
+</body>
+</html>
